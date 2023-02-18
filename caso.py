@@ -7,7 +7,7 @@ programs = dict()
 for time in range (10):
     # Get the title of the active tab
     tab_title = pyautogui.getActiveWindowTitle()
-    #diobestia
+    
     if(tab_title in programs.keys()):
         programs[tab_title] += 1
     else:
