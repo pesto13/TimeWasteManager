@@ -13,7 +13,7 @@ for time in range (10):
     else:
         programs[tab_title] = 1
 
-    print(tab_title)
+    print("Nome programma: ", tab_title)
     sleep(1)
 
 print(programs)
