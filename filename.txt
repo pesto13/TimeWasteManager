@@ -1,1 +1,1 @@
-{'Code': 21, 'Categorie Applicazioni PC. - Google Chrome': 43, 'Nuova scheda - Google Chrome': 1, 'SearchHost': 1, 'ApplicationFrameHost': 11}
+{'Code': 4, 'Categorie Applicazioni PC. - Google Chrome': 4, 'SearchHost': 6, 'explorer': 2, 'Gunfire Reborn': 12}

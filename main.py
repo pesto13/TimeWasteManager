@@ -8,7 +8,7 @@ import sys
 from dataclasses import dataclass
 
 # Activate Google Chrome window
-# dizionario: key = nome del programma - value la classes
+# dizionario: key = nome del programma - value la classe
 programs = dict()
 
 browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
@@ -29,8 +29,10 @@ def getAppName():
     user32.GetWindowThreadProcessId(h_wnd, ctypes.byref(pid))
     process = psutil.Process(pid.value)
     process_name = process.name()
+    process_path = process.exe()
     
-    return process_name
+    return process_name.split('.')[0], process_path
+    
 
 def writeOnFile(programs, original_stdout):
     with open('filename.txt', 'w') as f:
@@ -38,30 +40,38 @@ def writeOnFile(programs, original_stdout):
         print(programs)
         sys.stdout = original_stdout # Reset the standard output to its original value
 
-count = 0
-while True:
-    # Get the title of the active tab
-    count+=1
-    app_name = getAppName()
-    app_name = app_name.split('.')[0]
+
+
+def runV1():
+    
+    app_name, app_path = getAppName()
     if app_name in browsers:
         tab_title = getBrowserTab()
     else:
         tab_title = app_name
-
+    print(app_path)
     if(tab_title in programs.keys()):
         programs[tab_title] += 1
     else:
         programs[tab_title] = 1
 
-    print(tab_title)
     sleep(1)
 
-    if count>=7:
-        original_stdout = sys.stdout
-        writeOnFile(programs, original_stdout)
-        count=0
     
+    
+if __name__ == '__main__':
+    count = 0
+    while True:
+        count+=1
+
+        
+        
+        runV1()
 
 
-# Print the title
+        #scrivo su file
+        if count>=7:
+            original_stdout = sys.stdout
+            writeOnFile(programs, original_stdout)
+            count=0
+        
