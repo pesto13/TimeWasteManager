@@ -1,0 +1,1 @@
+{'Code': 21, 'Categorie Applicazioni PC. - Google Chrome': 43, 'Nuova scheda - Google Chrome': 1, 'SearchHost': 1, 'ApplicationFrameHost': 11}
