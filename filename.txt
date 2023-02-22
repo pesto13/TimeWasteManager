@@ -1,1 +1,1 @@
-{'Code': 7}
+{'Code': info(name='Code', cathegory='university', seconds=40), 'chrome': info(name='chrome', cathegory='working', seconds=30), 'SearchHost': info(name='SearchHost', cathegory='education', seconds=15), 'Spotify': info(name='Spotify', cathegory='entertainment', seconds=5)}

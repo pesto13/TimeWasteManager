@@ -1,16 +1,18 @@
-#import pyautogui
+import pyautogui
 from time import sleep
 import ctypes
 from ctypes import wintypes
-#import psutil
+import psutil
 import json
 import sys
 from dataclasses import dataclass
+import ai
+
+import debugpy
 
 import tree as t
 
-# dizionario: key = nome del programma - value la classe
-programs = dict()
+
 
 browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
 
@@ -22,7 +24,7 @@ class info():
     seconds: int
 
     #i nodi nell'albero vengono ordinati per nome dell'applicazione, per poi fare una ricerca più veloce
-    def __lt__(self, other: object|str):
+    """ def __lt__(self, other: object|str):
         if type(other) is info:
             return self.name<other.name
         else:
@@ -38,7 +40,7 @@ class info():
         if type(__o) is info:
             return self.name==__o.name
         else:
-            return self.name==__o
+            return self.name==__o """
 
 
 
@@ -66,7 +68,7 @@ def writeOnFile(programs, original_stdout):
 
 
 
-def runV1(myTree: t.AVLTree, root):
+def runV1(programs: dict, interval):
     
     #prendo il nome dell'app, e se è un browser prendo il nome del tab
     app_name, app_path = getAppName()
@@ -76,19 +78,25 @@ def runV1(myTree: t.AVLTree, root):
         tab_title = app_name
 
 
-    print(tab_title)
-    #se l'app è presente nel mio tree allora sono aposto
-    
+    #print(app_name)
+
+
     #se non è presente nel tree allora cerco con ai e aggiungo al tree
-
-    #aggiustiamo come salvare le info
-
-
-
-    if(tab_title in programs.keys()):
-        programs[tab_title] += 1
+    cat:str
+    if programs.get(app_name) == None:
+        print("non trovato")
+        cat = ai.get_application_category(app_name)
+        programs[app_name] = info(app_name, cat, interval)
+    
+    #altrimenti era già presente
     else:
-        programs[tab_title] = 1
+        print("trovato")
+        i = programs.get(app_name)
+        i.seconds += interval
+        #print(i)
+        programs[app_name] = i
+
+    
 
     
 def piccolomain():
@@ -100,26 +108,34 @@ def piccolomain():
 
     myTree.preOrder(root)
     print(myTree.find_value(root,"ciao").key.cathegory)
-    
+
+
+def status(programs: dict):
+
+    for i in programs.values():
+        print(i)
     
 if __name__ == '__main__':
-
+    debugpy.listen(5678)
     #piccolomain()
 
-    myTree = t.AVLTree()
-    root = None
+    """ myTree = t.AVLTree()
+    root = None """
+
+    interval = 5
+
+    programs = dict()
 
     count = 0
     while True:
         count+=1
 
-        
-        
-        runV1(myTree, root)
-        sleep(1)
+        runV1(programs, interval)
+        sleep(interval)
 
         #scrivo su file
         if count>=7:
+            #status(programs)
             original_stdout = sys.stdout
             writeOnFile(programs, original_stdout)
             count=0

@@ -7,3 +7,4 @@ pyvenv.cfg
 /lib64
 /bin
 /__pycache__
+filename.txt

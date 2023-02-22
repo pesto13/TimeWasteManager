@@ -8,7 +8,7 @@ def configure():
     load_dotenv()
     openai.api_key = os.getenv('TOKEN')
 
-def get_application_category(text):
+def get_application_category(text) -> str:
     
     categories = ['gaming', 'working', 'entertainment', 'learning']
     c = ", ".join(categories)
@@ -36,5 +36,4 @@ if __name__ == '__main__':
     configure()
     print(get_application_category("waste tracker"))
 
-
-
+configure()
