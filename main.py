@@ -7,6 +7,8 @@ import json
 import sys
 from dataclasses import dataclass
 
+import tree as t
+
 # Activate Google Chrome window
 # dizionario: key = nome del programma - value la classe
 programs = dict()
@@ -15,9 +17,37 @@ browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
 
 
 @dataclass
-class browserTab():
+class info():
     name: str
-    seconds: int
+    cathegory: str
+
+    def __lt__(self, other: object|str):
+        if type(other) is info:
+            return self.name<other.name
+        else:
+            return self.name<other
+    
+    def __gt__(self, other: object|str):
+        if type(other) is info:
+            return self.name>other.name
+        else:
+            return self.name>other
+
+    def __eq__(self, __o: object|str) -> bool:
+        if type(__o) is info:
+            return self.name==__o.name
+        else:
+            return self.name==__o
+
+myTree = t.AVLTree()
+root = None
+nodi = [info("ciao", "svago"), info("lol", "svago"), info("code", "lavoro")]
+for n in nodi:
+    root = myTree.insert_node(root, n)
+
+myTree.preOrder(root)
+print(myTree.find_value(root,"ciao").key.cathegory)
+
 
 def getBrowserTab():
     return pyautogui.getActiveWindowTitle()
@@ -44,18 +74,29 @@ def writeOnFile(programs, original_stdout):
 
 def runV1():
     
+    #prendo il nome dell'app, e se è un browser prendo il nome del tab
     app_name, app_path = getAppName()
     if app_name in browsers:
         tab_title = getBrowserTab()
     else:
         tab_title = app_name
-    print(app_path)
+
+
+    print(tab_title)
+    #se l'app è presente nel mio tree allora sono aposto
+
+    #se non è presente nel tree allora cerco con ai e aggiungo al tree
+
+    #aggiustiamo come salvare le info
+
+
+
     if(tab_title in programs.keys()):
         programs[tab_title] += 1
     else:
         programs[tab_title] = 1
 
-    sleep(1)
+    
 
     
     
@@ -67,7 +108,7 @@ if __name__ == '__main__':
         
         
         runV1()
-
+        sleep(1)
 
         #scrivo su file
         if count>=7:

@@ -1,1 +1,1 @@
-{'Code': 4, 'Categorie Applicazioni PC. - Google Chrome': 4, 'SearchHost': 6, 'explorer': 2, 'Gunfire Reborn': 12}
+{'Code': 7}
