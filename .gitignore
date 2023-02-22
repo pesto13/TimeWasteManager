@@ -3,3 +3,7 @@
 /scripts
 pyvenv.cfg
 .env
+/lib
+/lib64
+/bin
+/__pycache__

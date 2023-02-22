@@ -162,11 +162,13 @@ class AVLTree(object):
         if info > root.key:
             return self.find_value(root.right, info)
 
-myTree = AVLTree()
-root = None
-nums = [33, 13, 52, 9, 21, 61, 8, 11]
-for num in nums:
-    root = myTree.insert_node(root, num)
 
+#codice per fare prove sull'albero
+if __name__ == "__main__":
+    myTree = AVLTree()
+    root = None
+    nums = [33, 13, 52, 9, 21, 61, 8, 11]
+    for num in nums:
+        root = myTree.insert_node(root, num)
 
-print(myTree.find_value(root, 11))
+    print(myTree.find_value(root, 11))

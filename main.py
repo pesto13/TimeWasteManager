@@ -1,15 +1,14 @@
-import pyautogui
+#import pyautogui
 from time import sleep
 import ctypes
 from ctypes import wintypes
-import psutil
+#import psutil
 import json
 import sys
 from dataclasses import dataclass
 
 import tree as t
 
-# Activate Google Chrome window
 # dizionario: key = nome del programma - value la classe
 programs = dict()
 
@@ -20,7 +19,9 @@ browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
 class info():
     name: str
     cathegory: str
+    seconds: int
 
+    #i nodi nell'albero vengono ordinati per nome dell'applicazione, per poi fare una ricerca più veloce
     def __lt__(self, other: object|str):
         if type(other) is info:
             return self.name<other.name
@@ -39,14 +40,7 @@ class info():
         else:
             return self.name==__o
 
-myTree = t.AVLTree()
-root = None
-nodi = [info("ciao", "svago"), info("lol", "svago"), info("code", "lavoro")]
-for n in nodi:
-    root = myTree.insert_node(root, n)
 
-myTree.preOrder(root)
-print(myTree.find_value(root,"ciao").key.cathegory)
 
 
 def getBrowserTab():
@@ -72,7 +66,7 @@ def writeOnFile(programs, original_stdout):
 
 
 
-def runV1():
+def runV1(myTree: t.AVLTree, root):
     
     #prendo il nome dell'app, e se è un browser prendo il nome del tab
     app_name, app_path = getAppName()
@@ -84,7 +78,7 @@ def runV1():
 
     print(tab_title)
     #se l'app è presente nel mio tree allora sono aposto
-
+    
     #se non è presente nel tree allora cerco con ai e aggiungo al tree
 
     #aggiustiamo come salvare le info
@@ -97,17 +91,31 @@ def runV1():
         programs[tab_title] = 1
 
     
+def piccolomain():
+    myTree = t.AVLTree()
+    root = None
+    nodi = [info("ciao", "svago", 3), info("lol", "svago", 6), info("code", "lavoro", 9)]
+    for n in nodi:
+        root = myTree.insert_node(root, n)
 
+    myTree.preOrder(root)
+    print(myTree.find_value(root,"ciao").key.cathegory)
     
     
 if __name__ == '__main__':
+
+    #piccolomain()
+
+    myTree = t.AVLTree()
+    root = None
+
     count = 0
     while True:
         count+=1
 
         
         
-        runV1()
+        runV1(myTree, root)
         sleep(1)
 
         #scrivo su file
