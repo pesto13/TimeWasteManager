@@ -1,1 +1,11 @@
-{'Code': info(name='Code', cathegory='university', seconds=40), 'chrome': info(name='chrome', cathegory='working', seconds=30), 'SearchHost': info(name='SearchHost', cathegory='education', seconds=15), 'Spotify': info(name='Spotify', cathegory='entertainment', seconds=5)}
+{
+    "name": "Code",
+    "cathegory": "umBu7",
+    "seconds": 35
+}
+{
+    "name": "chromeumBu7",
+    "cathegory": "umBu7",
+    "seconds": 5
+}
+
