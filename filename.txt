@@ -1,0 +1,11 @@
+{
+    "name": "Code",
+    "cathegory": "umBu7",
+    "seconds": 35
+}
+{
+    "name": "chromeumBu7",
+    "cathegory": "umBu7",
+    "seconds": 5
+}
+
