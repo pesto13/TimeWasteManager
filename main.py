@@ -3,6 +3,7 @@ from time import sleep
 import ctypes
 from ctypes import wintypes
 import psutil
+
 import json
 import sys
 from dataclasses import dataclass
@@ -44,9 +45,6 @@ class info():
         else:
             return self.name==__o """
 
-
-
-
 def getBrowserTab():
     return pyautogui.getActiveWindowTitle()
 
@@ -57,6 +55,7 @@ def getAppName():
     user32.GetWindowThreadProcessId(h_wnd, ctypes.byref(pid))
     process = psutil.Process(pid.value)
     process_name = process.name()
+
     process_path = process.exe()
     
     return process_name.split('.')[0], process_path
@@ -170,4 +169,3 @@ if __name__ == '__main__':
             count=0
             
         sleep(interval)
-        
