@@ -55,11 +55,23 @@ def getAppName():
     
 
 def writeOnFile(programs: dict[info]):
-    with open('filename.json', 'w') as f:
+    from datetime import date
+    today = date.today()
+
+    import os
+
+    # percorso assoluto della directory in cui si trova il file di script
+    script_dir = os.path.dirname(os.path.abspath("main.py"))
+
+    # percorso relativo del file da scrivere
+    file_path = os.path.join(script_dir, "daily_track", f"{today}.json")
+
+
+    with open(file_path, 'w') as f:
         json.dump([p.__dict__ for p in programs.values()], f, indent=4)
 
 #funzione di aiuto
-def random_genere():
+def random_genere() -> string: 
     # Define the length of the random string
     length: int = 5
 
@@ -70,7 +82,7 @@ def random_genere():
     return ''.join(random.choice(characters) for _ in range(length))
 
 
-def runV1(programs: dict[info], l: list[str], interval):
+def runV1(programs: dict[info], l: list[str], interval: int):
 
     
     browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
@@ -106,7 +118,7 @@ def runV1(programs: dict[info], l: list[str], interval):
         #ora, se non è un browser, genero il suo categoria
         if remember_app not in browsers:
             cat = random_genere()
-            
+
         programs[app_name] = info(app_name, cat, interval)
     
     #altrimenti era già presente
@@ -126,7 +138,6 @@ def runV1(programs: dict[info], l: list[str], interval):
         l.pop(0)
 
     
-
 """ def piccolomain():
     myTree = t.AVLTree()
     root = None
@@ -166,7 +177,7 @@ def main():
 
 if __name__ == '__main__':
     
-    #riattivalo nel momento del bisogno
+    #TODO riattivalo nel momento del bisogno
     #ai.main()
     main()
     
