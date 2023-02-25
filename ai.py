@@ -36,4 +36,6 @@ if __name__ == '__main__':
     configure()
     print(get_application_category("waste tracker"))
 
-configure()
+
+def main():
+    configure()

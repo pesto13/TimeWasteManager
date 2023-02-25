@@ -13,18 +13,11 @@ import random
 import string
 
 
-
-browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
-
-
 @dataclass
 class info():
     name: str
     cathegory: str
     seconds: int
-
-    def convert_to_dict(self):
-        print(self.__dict__)
 
     #i nodi nell'albero vengono ordinati per nome dell'applicazione, per poi fare una ricerca più veloce
     """ def __lt__(self, other: object|str):
@@ -61,19 +54,26 @@ def getAppName():
     return process_name.split('.')[0], process_path
     
 
-def writeOnFile(programs, original_stdout):
-    with open('filename.txt', 'w') as f:
-        sys.stdout = f # Change the standard output to the file we created.
-        json_string = ""
-        for p in programs.values():
-            json_string += json.dumps(p.__dict__, indent=4)+"\n"
-        print(json_string)   
-        sys.stdout = original_stdout # Reset the standard output to its original value
+def writeOnFile(programs: dict[info]):
+    with open('filename.json', 'w') as f:
+        json.dump([p.__dict__ for p in programs.values()], f, indent=4)
 
+#funzione di aiuto
+def random_genere():
+    # Define the length of the random string
+    length: int = 5
+
+    # Define the pool of characters to choose from
+    characters = string.ascii_letters + string.digits
+
+    # Generate the random string
+    return ''.join(random.choice(characters) for _ in range(length))
 
 
 def runV1(programs: dict[info], l: list[str], interval):
+
     
+    browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
     #attualmente non sta venendo usato ne il path ne il tab_title
     app_name, app_path = getAppName()
     if app_name in browsers:
@@ -81,8 +81,10 @@ def runV1(programs: dict[info], l: list[str], interval):
     else:
         tab_title = app_name
 
-    cat:str
+    cat:str = ""
     remember_app: str = ""
+
+    #se l'app è un browser, associo la categoria al browser
     if app_name in browsers:
         from collections import Counter
         # utilizzo di Counter() per contare il numero di occorrenze di ogni elemento
@@ -90,27 +92,21 @@ def runV1(programs: dict[info], l: list[str], interval):
         # utilizzo di most_common() per trovare l'elemento più comune
         if counted_list:
             cat = counted_list.most_common(1)[0][0]
-        
+            
         remember_app = app_name
         app_name += cat
-
+        
     #poi procedo ad inserirlo
     if programs.get(app_name) == None:
         print("non trovato")
 
         #devo farlo se non è un browser
         #cat = ai.get_application_category(app_name)
-        
-        # Define the length of the random string
-        length = 5
 
-        # Define the pool of characters to choose from
-        characters = string.ascii_letters + string.digits
-
-        # Generate the random string if is not a browser
+        #ora, se non è un browser, genero il suo categoria
         if remember_app not in browsers:
-            cat = ''.join(random.choice(characters) for _ in range(length))
-
+            cat = random_genere()
+            
         programs[app_name] = info(app_name, cat, interval)
     
     #altrimenti era già presente
@@ -121,18 +117,17 @@ def runV1(programs: dict[info], l: list[str], interval):
         cat = i.cathegory
         programs[app_name] = i
 
-        l.append(cat)
-        
-
+    
+    
 
     #fineif
+    l.append(cat)
     if len(l)>20:
         l.pop(0)
 
     
 
-    
-def piccolomain():
+""" def piccolomain():
     myTree = t.AVLTree()
     root = None
     nodi = [info("ciao", "svago", 3), info("lol", "svago", 6), info("code", "lavoro", 9)]
@@ -140,17 +135,17 @@ def piccolomain():
         root = myTree.insert_node(root, n)
 
     myTree.preOrder(root)
-    print(myTree.find_value(root,"ciao").key.cathegory)
+    print(myTree.find_value(root,"ciao").key.cathegory) """
 
 
-def status(programs: dict):
+def status(programs: dict[info]):
 
     for i in programs.values():
         print(i)
-    
-if __name__ == '__main__':
-    
-    #piccolomain()
+
+
+
+def main():
     interval = 5
     programs = dict()
     l = list()
@@ -161,12 +156,17 @@ if __name__ == '__main__':
 
         runV1(programs, l, interval)
         
-
         #scrivo su file
         if count>=1:
             #status(programs)
-            original_stdout = sys.stdout
-            writeOnFile(programs, original_stdout)
+            writeOnFile(programs)
             count=0
             
         sleep(interval)
+
+if __name__ == '__main__':
+    
+    #riattivalo nel momento del bisogno
+    #ai.main()
+    main()
+    
