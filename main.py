@@ -88,7 +88,8 @@ def runV1(programs: dict[info], l: list[str], interval):
         # utilizzo di Counter() per contare il numero di occorrenze di ogni elemento
         counted_list = Counter(l)
         # utilizzo di most_common() per trovare l'elemento più comune
-        cat = counted_list.most_common(1)[0][0]
+        if counted_list:
+            cat = counted_list.most_common(1)[0][0]
         
         remember_app = app_name
         app_name += cat
