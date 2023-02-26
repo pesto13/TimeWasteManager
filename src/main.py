@@ -60,7 +60,7 @@ def runV1(programs: dict[Info], l: list[str], interval: int):
     
 
 def main():
-    interval = 5
+    interval = 1
     programs = dict()
     l = list()
     today = date.today()
@@ -72,7 +72,7 @@ def main():
         runV1(programs, l, interval)
         
         #scrivo su file
-        if count>=1:
+        if count>=5:
             count=0
 
             #stampo subito cosi non perdo info, al massimo ho fatto un interval secondi in più nel giorno precedente :D
@@ -88,10 +88,16 @@ def main():
             
         sleep(interval)
 
+def prova():
+    programs = dict()
+    utils.load_last_days(programs, 1)
+    for p in programs.values():
+        print(p)
+
 if __name__ == '__main__':
     
     #TODO riattivalo nel momento del bisogno
     #TODO non credo serva piu 
     #ai.main()
-    main()
-    
+    #main()
+    prova()
