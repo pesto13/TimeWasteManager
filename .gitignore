@@ -8,3 +8,4 @@ lib64/
 bin/
 __pycache__/
 daily_track/
+*.json

@@ -17,14 +17,14 @@ def get_path(f):
         # percorso relativo del file da scrivere
         file_path = os.path.join(script_dir, "daily_track", f"{file_name}.json")
         
-        programs = args[0] if len(args)>0 else kwargs['name']
+        timeline = args[0] if len(args)>0 else kwargs['name']
 
-        return f(programs, file_path)
+        return f(timeline, file_path)
     return inner
 
 #TODO la figata è che basta cambiare questo per modificare il comportamento di tutte le funzioni
 @get_path
-def load_day(programs: dict[Info], filename: str):
+def load_day(timeline: list[Info], filename: str):
 
     error = False
 
@@ -43,9 +43,9 @@ def load_day(programs: dict[Info], filename: str):
         return
     
     #TODO in particolar modo di questo
-    _loadV1(programs, data)
+    _loadV2(timeline, data)
 
-def load_last_days(programs: dict[Info], days: int = 7):
+def load_last_days(timeline: list[Info], days: int = 7):
     """
     Load the last few days from today from JSON files
 
@@ -57,35 +57,40 @@ def load_last_days(programs: dict[Info], days: int = 7):
     today = datetime.date.today()
     start_day = (today-datetime.timedelta(days=days)).strftime("%Y-%m-%d")
     
-    load_range_days(programs, start_day, today.strftime("%Y-%m-%d"))
+    load_range_days(timeline, start_day, today.strftime("%Y-%m-%d"))
 
 def _generate_dates(date_start: datetime.date, date_end: datetime.date):
     for d in range((date_end-date_start).days + 1):
         yield ((date_start+datetime.timedelta(days=d)).strftime("%Y-%m-%d"))
 
-def _loadV1(programs, data):
+""" def _loadV1(timeline, data):
     for data_dict in data:
         #print(data_dict)
-        programs[data_dict['name']] = Info(**data_dict) if programs.get(data_dict['name'], None) == None else programs[data_dict['name']] + data_dict['seconds']
+        timeline[data_dict['name']] = Info(**data_dict) if timeline.get(data_dict['name'], None) == None else timeline[data_dict['name']] + data_dict['seconds']
+ """
+def _loadV2(timeline: list[Info], data):
+    for data_dict in data:
+        timeline.append(Info(**data_dict))
 
-def load_range_days(programs: dict[Info], start_day: str, end_day:str):
+def load_range_days(timeline: list[Info], start_day: str, end_day:str):
     date_start = datetime.datetime.strptime(start_day, "%Y-%m-%d").date()
     date_end = datetime.datetime.strptime(end_day, "%Y-%m-%d").date()
-
-    dates : list[str] = []
     
     for d in _generate_dates(date_start, date_end):
         print(d)
-        load_day(programs, d)
-
-
+        load_day(timeline, d)
 
 
 @get_path
-def write_file(programs: dict[Info], file_path: str):
+def write_file(timeline: list[Info], file_path: str):
+    with open(file_path, 'w') as f:
+        json.dump([t.__dict__ for t in timeline], f, indent=4)
+
+""" @get_path
+def write_file(timeline: list[Info], file_path: str):
 
     with open(file_path, 'w') as f:
-        json.dump([p.__dict__ for p in programs.values()], f, indent=4)
+        json.dump([p.__dict__ for p in timeline.values()], f, indent=4) """
 
 
 #funzione di aiuto
@@ -98,12 +103,6 @@ def random_genere() -> str:
 
     # Generate the random string
     return ''.join(random.choice(characters) for _ in range(length))
-
-
-def status(programs: dict[Info]):
-
-    for i in programs.values():
-        print(i)
 
 
 """ def piccolomain():

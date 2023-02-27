@@ -15,10 +15,10 @@ def getAppName():
     process_name = process.name()
 
     #da quello che ho visto il path esplode in alcuni casi, avevo avviato lol tipo
-    try:
+    """ try:
         process_path = process.exe()
-    except psutil._pswindows.convert_oserror:
+    except :
         print("bro non sono riuscito :D")
-        process_path = None
+        process_path = None """
         
-    return process_name.split('.')[0], process_path
+    return process_name.split('.')[0]

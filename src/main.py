@@ -1,17 +1,18 @@
-from time import sleep
+from time import sleep, time
 from datetime import date
 
 from logic import process
 from logic.info import Info
+
 from utilities import utils
 
-def runV1(programs: dict[Info], l: list[str], interval: int):
+""" def runV1(programs: dict[Info], l: list[str], interval: int):
 
     browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
     #attualmente non sta venendo usato ne il path ne il tab_title
     app_name, app_path = process.getAppName()
 
-    tab_title = process.getBrowserTab() if app_name in browsers else app_name
+    # tab_title = process.getBrowserTab() if app_name in browsers else app_name
 
     cat:str = ""
     remember_app: str = ""
@@ -33,8 +34,8 @@ def runV1(programs: dict[Info], l: list[str], interval: int):
         print("non trovato")
 
         #devo farlo se non è un browser
-        """ if remember_app not in browsers:
-            cat = ai.get_application_category(app_name) """
+        if remember_app not in browsers:
+            cat = ai.get_application_category(app_name)
 
         #ora, se non è un browser, genero il suo categoria
         if remember_app not in browsers:
@@ -56,43 +57,115 @@ def runV1(programs: dict[Info], l: list[str], interval: int):
     #endif
     l.append(cat)
     if len(l)>20:
-        l.pop(0)
+        l.pop(0) """
 
+
+def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], interval):
+    browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
+    #attualmente non sta venendo usato ne il path ne il tab_title
+    app_name = process.getAppName()
+
+    # tab_title = process.getBrowserTab() if app_name in browsers else app_name
+
+    cat:str = ""
+    remember_app: str = ""
+
+    #se l'app è un browser, associo la categoria al browser
+    if app_name in browsers:
+        from collections import Counter
+        # utilizzo di Counter() per contare il numero di occorrenze di ogni elemento
+        counted_list = Counter(latest_cat)
+        # utilizzo di most_common() per trovare l'elemento più comune
+        if counted_list:
+            cat = counted_list.most_common(1)[0][0]
+            
+        remember_app = app_name
+        app_name += cat
+        
+    #poi procedo ad inserirlo
+    if cat_app.get(app_name) == None:
+
+        #devo farlo se non è un browser
+        """ if remember_app not in browsers:
+            cat = ai.get_application_category(app_name) """
+
+        #ora, se non è un browser, genero il suo categoria
+        if remember_app not in browsers:
+            cat = utils.random_genere()
+
+        cat_app[app_name] = cat
+        # programs[app_name] = Info(app_name, cat, interval)
+    
+    #altrimenti era già presente
+    else:
+        cat = cat_app.get(app_name)
+    
+
+    if len(timeline)==0 or timeline[-1].name != app_name:
+
+        timeline.append(Info(
+                name=app_name,
+                cathegory=cat,
+                start_time=int(time()),
+                delta_time=interval
+                ))
+        
+    else:
+        timeline[-1].delta_time+=interval
+
+    
+    
+
+    #endif
+    latest_cat.append(cat)
+    if len(latest_cat)>20:
+        latest_cat.pop(0)
     
 
 def main():
     interval = 1
-    programs = dict()
-    l = list()
+    """ programs = dict()
+    l = list() """
     today = date.today()
-
+    """
+    -una lista del tempo delle app
+    -un dizionario per associare app e categoria
+    -una lista delle ultime interval * numero di app usate
+    """
+    timeline: list[Info] = list()
+    cat_app: dict[str] = dict()
+    latest_cat: list[str] = list()
     count = 0
+    utils.load_day(timeline, today)
     while True:
         count+=1
 
-        runV1(programs, l, interval)
-        
-        #scrivo su file
-        if count>=5:
-            count=0
+        # runV1(programs, l, interval)
+        runV2(timeline, cat_app, latest_cat, interval)
 
+        #scrivo su file
+        if count>=3:
+            count=0
+            print("stampo")
             #stampo subito cosi non perdo info, al massimo ho fatto un interval secondi in più nel giorno precedente :D
-            utils.writeOnFile(programs, today)
+            # per v1
+            utils.write_file(timeline, today)
 
             #se è cambiato il giorno lo aggiorno
             if today != date.today():
                 today = date.today()
-                programs = dict()
-
+                # per v1
+                # programs = dict()
+                timeline = list()
             
             
             
         sleep(interval)
 
 def prova():
-    programs = dict()
-    utils.load_last_days(programs, 2)
-    for p in programs.values():
+    timeline: list[Info] = list()
+    utils.load_last_days(timeline, 0)
+    for p in timeline:
         print(p)
     
     """ utils.load_range_days(programs, "2023-02-25", "2023-02-26")
@@ -104,5 +177,5 @@ if __name__ == '__main__':
     #TODO riattivalo nel momento del bisogno
     #TODO non credo serva piu 
     #ai.main()
-    #main()
-    prova()
+    main()
+    # prova()

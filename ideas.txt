@@ -9,3 +9,24 @@ fare un riepilogo settimanale / mensile
 
 
 Aggiungere una linea del tempo?
+
+
+attualmente quello che faccio è prendere le informazioni e accumularle
+non è una divisione di in che momento della giornata sto esegundo quell'azione
+
+Devo modificare la classe Info per fare questo.
+Soluzioni:
+    -dare una data di inizio e un delta
+    -dare data inizio e fine
+
+in questo modo ora non mi frega più niente di avere 'programs' come dizionario
+a me serve una semplice linea del tempo
+
+tuttavia posso continuare a usare programs per associare l'app alla categoria, ma solo questa relazione.
+
+quindi avrei infine
+    -una lista delle ultime interval * numero di app usate
+    -un dizionario per associare app e categoria
+    -una lista del tempo delle app
+
+se poi volessi tornare a compattare il tutto ci pensiamo?
