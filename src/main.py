@@ -33,7 +33,8 @@ def runV1(programs: dict[Info], l: list[str], interval: int):
         print("non trovato")
 
         #devo farlo se non è un browser
-        #cat = ai.get_application_category(app_name)
+        """ if remember_app not in browsers:
+            cat = ai.get_application_category(app_name) """
 
         #ora, se non è un browser, genero il suo categoria
         if remember_app not in browsers:
@@ -52,7 +53,7 @@ def runV1(programs: dict[Info], l: list[str], interval: int):
     
     
 
-    #fineif
+    #endif
     l.append(cat)
     if len(l)>20:
         l.pop(0)
@@ -90,9 +91,13 @@ def main():
 
 def prova():
     programs = dict()
-    utils.load_last_days(programs, 1)
+    utils.load_last_days(programs, 2)
     for p in programs.values():
         print(p)
+    
+    """ utils.load_range_days(programs, "2023-02-25", "2023-02-26")
+    for p in programs.values():
+        print(p) """
 
 if __name__ == '__main__':
     

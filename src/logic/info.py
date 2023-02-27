@@ -6,6 +6,12 @@ class Info():
     cathegory: str
     seconds: int
 
+
+    def __add__(self, other: int):
+        if isinstance(other, int):
+            r = self
+            r.seconds+=other
+            return r
     #i nodi nell'albero vengono ordinati per nome dell'applicazione, per poi fare una ricerca più veloce
     """ def __lt__(self, other: object|str):
         if type(other) is Info:

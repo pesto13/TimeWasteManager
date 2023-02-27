@@ -2,14 +2,16 @@ import json
 import random
 import string
 import datetime
-from logic.info import Info 
+import os
+
+from logic.info import Info
+
 
 def get_path(f):
     def inner(*args,**kwargs):
 
         file_name = args[1] if len(args)>0 else kwargs['day']
 
-        import os
         # percorso assoluto della directory in cui si trova il file di script
         script_dir = os.path.dirname(os.path.abspath("main.py"))
         # percorso relativo del file da scrivere
@@ -20,30 +22,65 @@ def get_path(f):
         return f(programs, file_path)
     return inner
 
-#TODO probabilmente non è corrette 100%, sovrascrive i dati
+#TODO la figata è che basta cambiare questo per modificare il comportamento di tutte le funzioni
 @get_path
-def load_today(programs: dict[Info], filename: str):
-    # Apri il file JSON in modalità lettura
-    with open(filename, 'r') as f:
-        # Leggi il contenuto del file JSON e deserializzalo in un oggetto Python
-        data = json.load(f)
+def load_day(programs: dict[Info], filename: str):
 
+    error = False
+
+    # Apri il file JSON in modalità lettura
+    try:
+        with open(filename, 'r') as f:
+            # Leggi il contenuto del file JSON e deserializzalo in un oggetto Python
+            data = json.load(f)
+    except FileNotFoundError:
+        error = True
+        print(f"{filename} non esistente")
     # Usa l'oggetto Python deserializzato
     
     #prendo il json e per ogni elemento ricreo l'oggetto
-    for data_dict in data:
-        programs[data_dict['name']] = Info(**data_dict)
-       
-def load_last_days(programs: dict[Info], days: int = 7):
-    today = datetime.date.today()
-    dates = []
-    for d in range(days):
-        dates.append(  (today-datetime.timedelta(days=d)).strftime("%Y-%m-%d") )
+    if error:
+        return
     
-    for d in dates:
-        load_today(programs, d)
+    #TODO in particolar modo di questo
+    _loadV1(programs, data)
 
-#TODO sistema per giorno
+def load_last_days(programs: dict[Info], days: int = 7):
+    """
+    Load the last few days from today from JSON files
+
+    gets today plus n days before
+    passing days=0 means get only today
+    passing days=7 gets last week
+    """
+
+    today = datetime.date.today()
+    start_day = (today-datetime.timedelta(days=days)).strftime("%Y-%m-%d")
+    
+    load_range_days(programs, start_day, today.strftime("%Y-%m-%d"))
+
+def _generate_dates(date_start: datetime.date, date_end: datetime.date):
+    for d in range((date_end-date_start).days + 1):
+        yield ((date_start+datetime.timedelta(days=d)).strftime("%Y-%m-%d"))
+
+def _loadV1(programs, data):
+    for data_dict in data:
+        #print(data_dict)
+        programs[data_dict['name']] = Info(**data_dict) if programs.get(data_dict['name'], None) == None else programs[data_dict['name']] + data_dict['seconds']
+
+def load_range_days(programs: dict[Info], start_day: str, end_day:str):
+    date_start = datetime.datetime.strptime(start_day, "%Y-%m-%d").date()
+    date_end = datetime.datetime.strptime(end_day, "%Y-%m-%d").date()
+
+    dates : list[str] = []
+    
+    for d in _generate_dates(date_start, date_end):
+        print(d)
+        load_day(programs, d)
+
+
+
+
 @get_path
 def write_file(programs: dict[Info], file_path: str):
 
