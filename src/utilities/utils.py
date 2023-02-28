@@ -3,7 +3,7 @@ import random
 import string
 import datetime
 import os
-from typing import Union
+from typing import Optional
 
 from logic.info import Info
 import time
@@ -24,7 +24,7 @@ def get_path(f):
     return inner
 
 
-def _load_json(filename: str) -> Union[dict, None]:
+def _load_json(filename: str) -> Optional[list[dict]]:
     error = False
 
     # Apri il file JSON in modalità lettura

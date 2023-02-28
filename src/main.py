@@ -6,6 +6,12 @@ from logic.info import Info
 
 from utilities import utils
 
+
+
+
+
+from logic import process
+
 """ def runV1(programs: dict[Info], l: list[str], interval: int):
 
     browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
@@ -163,17 +169,14 @@ def main():
         sleep(interval)
 
 def prova():
-    timeline: list[Info] = list()
-    utils.load_last_days(timeline, 0)
-    for p in timeline:
-        print(p)
     
-    """ utils.load_range_days(programs, "2023-02-25", "2023-02-26")
-    for p in programs.values():
-        print(p) """
+    
+    while True:
+        process.getAppName()
+        sleep(1)
 
 if __name__ == '__main__':
     
     
-    main()
-    # prova()
+    #main()
+    prova()
