@@ -90,7 +90,7 @@ def write_file(timeline: list[Info], file_path: str):
     data: list = _load_json(file_path)
     data.extend([t.__dict__ for t in timeline])
     print(data)
-    with open(file_path, 'a') as f:
+    with open(file_path, 'w') as f:
         
         json.dump(data, f, indent=4)
 

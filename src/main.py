@@ -69,7 +69,7 @@ from logic import process
 def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], interval):
     browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
     #attualmente non sta venendo usato ne il path ne il tab_title
-    app_name = process.getAppName()
+    app_name = process.get_app_name()
 
     # tab_title = process.getBrowserTab() if app_name in browsers else app_name
 
@@ -172,11 +172,11 @@ def prova():
     
     
     while True:
-        process.getAppName()
+        process.get_app_name()
         sleep(1)
 
 if __name__ == '__main__':
     
     
-    #main()
-    prova()
+    main()
+    # prova()

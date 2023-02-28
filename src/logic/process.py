@@ -1,16 +1,23 @@
-#import pyautogui
+# assurdo commentato pyatogui non fa funzionare il programma,e non lo sto usando
+import pyautogui
 import ctypes
 
 import psutil
 
 import platform
 import subprocess
+
 """ 
 def getBrowserTab():
     return pyautogui.getActiveWindowTitle() """
 
-def getAppName():
-    if(False):
+def get_os():
+    return platform.system()
+
+
+def get_app_name():
+    if(get_os() == "Windows"):
+        
         user32 = ctypes.windll.user32
         h_wnd = user32.GetForegroundWindow()
         pid = ctypes.wintypes.DWORD()
@@ -26,7 +33,9 @@ def getAppName():
             process_path = None """
             
         return process_name.split('.')[0]
-    else:
+    
+
+    elif(get_os() == "Linux"):
 
         # Esegui il comando xprop per ottenere l'ID della finestra in foreground
         output = subprocess.check_output(['xprop', '-root', '_NET_ACTIVE_WINDOW'])
@@ -38,3 +47,4 @@ def getAppName():
 
         print(f"Il nome del processo in foreground è: {nome_processo}")
 
+        return ""
