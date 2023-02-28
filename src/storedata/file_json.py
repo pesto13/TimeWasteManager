@@ -87,12 +87,10 @@ def load_range_days(timeline: list[Info], start_day: str, end_day:str):
 
 @get_path
 def write_file(timeline: list[Info], file_path: str):
-    data: list = _load_json(file_path)
-    data.extend([t.__dict__ for t in timeline])
-    print(data)
+
     with open(file_path, 'w') as f:
         
-        json.dump(data, f, indent=4)
+        json.dump([t.__dict__ for t in timeline], f, indent=4)
 
 
 """ @get_path

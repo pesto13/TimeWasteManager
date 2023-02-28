@@ -9,3 +9,5 @@ bin/
 __pycache__/
 daily_track/
 *.json
+*.db
+*.sqlite

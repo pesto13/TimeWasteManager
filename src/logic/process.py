@@ -1,7 +1,6 @@
-# assurdo commentato pyatogui non fa funzionare il programma,e non lo sto usando
-import pyautogui
+# import pyautogui
 import ctypes
-
+from ctypes import wintypes
 import psutil
 
 import platform
@@ -20,7 +19,7 @@ def get_app_name():
         
         user32 = ctypes.windll.user32
         h_wnd = user32.GetForegroundWindow()
-        pid = ctypes.wintypes.DWORD()
+        pid = wintypes.DWORD()
         user32.GetWindowThreadProcessId(h_wnd, ctypes.byref(pid))
         process = psutil.Process(pid.value)
         process_name = process.name()
@@ -36,7 +35,7 @@ def get_app_name():
     
 
     elif(get_os() == "Linux"):
-
+        #TODO sistema il return
         # Esegui il comando xprop per ottenere l'ID della finestra in foreground
         output = subprocess.check_output(['xprop', '-root', '_NET_ACTIVE_WINDOW'])
         wid = output.split()[-1]

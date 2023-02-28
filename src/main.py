@@ -4,7 +4,7 @@ from datetime import date
 from logic import process
 from logic.info import Info
 
-from utilities import utils
+from storedata import file_json
 
 
 
@@ -45,7 +45,7 @@ from logic import process
 
         #ora, se non è un browser, genero il suo categoria
         if remember_app not in browsers:
-            cat = utils.random_genere()
+            cat = storedata.random_genere()
 
         programs[app_name] = Info(app_name, cat, interval)
     
@@ -97,7 +97,7 @@ def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], inter
 
         #ora, se non è un browser, genero il suo categoria
         if remember_app not in browsers:
-            cat = utils.random_genere()
+            cat = file_json.random_genere()
 
         cat_app[app_name] = cat
         # programs[app_name] = Info(app_name, cat, interval)
@@ -142,7 +142,7 @@ def main():
     cat_app: dict[str] = dict()
     latest_cat: list[str] = list()
     count = 0
-    utils.load_day(timeline, today)
+    file_json.load_day(timeline, today)
     while True:
         count+=1
 
@@ -155,7 +155,7 @@ def main():
             print("stampo")
             #stampo subito cosi non perdo info, al massimo ho fatto un interval secondi in più nel giorno precedente :D
             # per v1
-            utils.write_file(timeline, today)
+            file_json.write_file(timeline, today)
             #timeline = []
             #se è cambiato il giorno lo aggiorno
             if today != date.today():
