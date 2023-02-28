@@ -3,9 +3,10 @@ import random
 import string
 import datetime
 import os
+from typing import Union
 
 from logic.info import Info
-
+import time
 
 def get_path(f):
     def inner(*args,**kwargs):
@@ -22,10 +23,8 @@ def get_path(f):
         return f(timeline, file_path)
     return inner
 
-#TODO la figata è che basta cambiare questo per modificare il comportamento di tutte le funzioni
-@get_path
-def load_day(timeline: list[Info], filename: str):
 
+def _load_json(filename: str) -> Union[dict, None]:
     error = False
 
     # Apri il file JSON in modalità lettura
@@ -36,12 +35,16 @@ def load_day(timeline: list[Info], filename: str):
     except FileNotFoundError:
         error = True
         print(f"{filename} non esistente")
-    # Usa l'oggetto Python deserializzato
-    
-    #prendo il json e per ogni elemento ricreo l'oggetto
-    if error:
+
+    return data if not error else None
+
+#TODO la figata è che basta cambiare questo per modificare il comportamento di tutte le funzioni
+@get_path
+def load_day(timeline: list[Info], filename: str):
+
+    data = _load_json(filename)
+    if data == None:
         return
-    
     #TODO in particolar modo di questo
     _loadV2(timeline, data)
 
@@ -72,6 +75,7 @@ def _loadV2(timeline: list[Info], data):
     for data_dict in data:
         timeline.append(Info(**data_dict))
 
+
 def load_range_days(timeline: list[Info], start_day: str, end_day:str):
     date_start = datetime.datetime.strptime(start_day, "%Y-%m-%d").date()
     date_end = datetime.datetime.strptime(end_day, "%Y-%m-%d").date()
@@ -83,12 +87,17 @@ def load_range_days(timeline: list[Info], start_day: str, end_day:str):
 
 @get_path
 def write_file(timeline: list[Info], file_path: str):
-    with open(file_path, 'w') as f:
-        json.dump([t.__dict__ for t in timeline], f, indent=4)
+    data: list = _load_json(file_path)
+    data.extend([t.__dict__ for t in timeline])
+    print(data)
+    with open(file_path, 'a') as f:
+        
+        json.dump(data, f, indent=4)
+
 
 """ @get_path
 def write_file(timeline: list[Info], file_path: str):
-
+    #older version
     with open(file_path, 'w') as f:
         json.dump([p.__dict__ for p in timeline.values()], f, indent=4) """
 
@@ -103,6 +112,18 @@ def random_genere() -> str:
 
     # Generate the random string
     return ''.join(random.choice(characters) for _ in range(length))
+
+
+
+def timer_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"{func.__name__} ha impiegato {end_time - start_time} secondi.")
+        return result
+    return wrapper
+
 
 
 """ def piccolomain():

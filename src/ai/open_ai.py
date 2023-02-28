@@ -1,12 +1,13 @@
 import os
 from dotenv import load_dotenv
 import openai
-
+from functools import cache
 
 def configure():
     load_dotenv()
     openai.api_key = os.getenv('TOKEN')
 
+@cache
 def get_application_category(text) -> str:
     
     categories = ['gaming', 'working', 'entertainment', 'learning']

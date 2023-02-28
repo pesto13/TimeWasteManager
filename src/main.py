@@ -150,7 +150,7 @@ def main():
             #stampo subito cosi non perdo info, al massimo ho fatto un interval secondi in più nel giorno precedente :D
             # per v1
             utils.write_file(timeline, today)
-
+            #timeline = []
             #se è cambiato il giorno lo aggiorno
             if today != date.today():
                 today = date.today()
@@ -174,8 +174,6 @@ def prova():
 
 if __name__ == '__main__':
     
-    #TODO riattivalo nel momento del bisogno
-    #TODO non credo serva piu 
-    #ai.main()
+    
     main()
     # prova()
