@@ -3,8 +3,8 @@ Lib/
 scripts/
 pyvenv.cfg
 .env
-lib*/
-
+lib/
+/lib64
 bin/
 __pycache__/
 daily_track/
