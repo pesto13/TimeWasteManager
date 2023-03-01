@@ -140,7 +140,10 @@ def main():
     cat_app: dict[str] = dict()
     latest_cat: list[str] = list()
     count = 0
-    file_json.load_day(timeline, today)
+    #db.drop()
+    db.create()
+    db.load_last()
+    #file_json.load_day(timeline, today)
     while True:
         count+=1
 
@@ -156,7 +159,7 @@ def main():
             #file_json.write_file(timeline, today)
             #db.insert(timeline[0])
             db.insert_all(timeline)
-            #timeline = []
+            timeline = []
             #se è cambiato il giorno lo aggiorno
             if today != date.today():
                 today = date.today()

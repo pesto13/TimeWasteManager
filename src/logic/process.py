@@ -46,4 +46,4 @@ def get_app_name():
 
         print(f"Il nome del processo in foreground è: {nome_processo}")
 
-        return ""
+        return nome_processo
