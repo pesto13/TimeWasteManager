@@ -1,19 +1,37 @@
 import sqlite3
+from logic.info import Info
+from datetime import date
 
-# Apre la connessione al database
-conn = sqlite3.connect('bho.sqlite')
+def connection(f):
+    def inner(*args, **kwargs):
 
-# Crea la tabella
-conn.execute('''CREATE TABLE IF NOT EXISTS persone
-             (id INTEGER PRIMARY KEY,
-             nome TEXT NOT NULL,
-             eta INTEGER NOT NULL);''')
+        conn = sqlite3.connect('bho.sqlite')
+        print("mi connetto")
+        f(conn, *args, **kwargs)
+        conn.commit()
+        conn.close()
 
-# Inserisce dei dati nella tabella
-conn.execute("INSERT INTO persone (nome, eta) VALUES (?, ?)", ("Mario", 35))
-conn.execute("INSERT INTO persone (nome, eta) VALUES (?, ?)", ("Luigi", 28))
-conn.execute("INSERT INTO persone (nome, eta) VALUES (?, ?)", ("Paolo", 42))
+    return inner
 
-# Salva le modifiche e chiude la connessione
-conn.commit()
-conn.close()
+@connection
+def create(conn):
+
+
+    # Crea la tabella
+    conn.execute('''CREATE TABLE IF NOT EXISTS Info
+                (name TEXT NOT NULL,
+                cathegory TEXT NOT NULL,
+                start_time TIME NOT NULL,
+                delta_time INT,
+                file_name DATE 
+                );''')
+    
+
+@connection
+def insert_all(conn, timeline: list[Info]):
+    d = date().today()
+    for t in timeline:
+        values = vars(t).values()
+        
+        conn.execute("INSERT INTO Info (name, cathegory, start_time, delta_time) VALUES (?, ?, ?, ?, ?)", (values, d))
+

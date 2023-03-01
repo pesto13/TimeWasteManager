@@ -5,9 +5,7 @@ from logic import process
 from logic.info import Info
 
 from storedata import file_json
-
-
-
+from storedata import db
 
 
 from logic import process
@@ -155,7 +153,9 @@ def main():
             print("stampo")
             #stampo subito cosi non perdo info, al massimo ho fatto un interval secondi in più nel giorno precedente :D
             # per v1
-            file_json.write_file(timeline, today)
+            #file_json.write_file(timeline, today)
+            #db.insert(timeline[0])
+            db.insert_all(timeline)
             #timeline = []
             #se è cambiato il giorno lo aggiorno
             if today != date.today():
