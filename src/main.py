@@ -159,7 +159,6 @@ def main():
             #file_json.write_file(timeline, today)
             #db.insert(timeline[0])
             db.insert_all(timeline)
-            timeline = []
             #se è cambiato il giorno lo aggiorno
             if today != date.today():
                 today = date.today()

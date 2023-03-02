@@ -2,16 +2,11 @@ import sqlite3
 from logic.info import Info
 import datetime
 
-
-
 def connection(f):
     def inner(*args, **kwargs):
-
-        conn = sqlite3.connect('bho.sqlite')
-        print("mi connetto")
-        f(conn, *args, **kwargs)
-        conn.commit()
-        conn.close()
+        with sqlite3.connect('bho.sqlite') as conn:
+            f(conn, *args, **kwargs)
+            conn.commit()
 
     return inner
 
@@ -26,7 +21,7 @@ def load_last(conn: sqlite3.Connection):
     val = conn.execute(
         f"""
         SELECT * FROM Info
-        ORDER BY ID
+        ORDER BY rowid
         LIMIT 1
         """).fetchone()
     
@@ -38,8 +33,7 @@ def load_last(conn: sqlite3.Connection):
 def create(conn):
     # Crea la tabella
     conn.execute('''CREATE TABLE IF NOT EXISTS Info
-                (id int PRIMARY KEY,
-                name TEXT NOT NULL,
+                (name TEXT NOT NULL,
                 cathegory TEXT NOT NULL,
                 start_time TIME NOT NULL,
                 delta_time INT,
@@ -50,10 +44,13 @@ def create(conn):
 @connection
 def insert_all(conn, timeline: list[Info]):
     today = datetime.date.today()
-    print(today)
-    for t in timeline:
+    
+    while(len(timeline)<1):
+        t = timeline.pop(0)
         values = vars(t).values()
-        
         conn.execute("INSERT INTO Info (name, cathegory, start_time, delta_time, using_date) VALUES (?, ?, ?, ?, ?)", (*values, today.strftime("%Y-%m-%d")))
         print("fatto")
 
+    
+        
+        
