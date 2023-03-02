@@ -140,9 +140,12 @@ def main():
     cat_app: dict[str] = dict()
     latest_cat: list[str] = list()
     count = 0
-    #db.drop()
+    # db.drop()
     db.create()
-    db.load_last()
+
+    if ((row := db.load_last()) != None):
+        timeline.append(Info( *row ))
+    
     #file_json.load_day(timeline, today)
     while True:
         count+=1
@@ -153,11 +156,13 @@ def main():
         #scrivo su file
         if count>=3:
             count=0
-            print("stampo")
+            # print("stampo")
             #stampo subito cosi non perdo info, al massimo ho fatto un interval secondi in più nel giorno precedente :D
             # per v1
             #file_json.write_file(timeline, today)
             #db.insert(timeline[0])
+            for t in timeline:
+                print(t)
             db.insert_all(timeline)
             #se è cambiato il giorno lo aggiorno
             if today != date.today():

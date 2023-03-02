@@ -5,9 +5,9 @@ import datetime
 def connection(f):
     def inner(*args, **kwargs):
         with sqlite3.connect('bho.sqlite') as conn:
-            f(conn, *args, **kwargs)
+            row = f(conn, *args, **kwargs)
             conn.commit()
-
+            return row
     return inner
 
 @connection
@@ -18,14 +18,25 @@ def drop(conn: sqlite3.Connection):
 def load_last(conn: sqlite3.Connection):
     
     
-    val = conn.execute(
+    row : tuple = conn.execute(
         f"""
         SELECT * FROM Info
-        ORDER BY rowid
+        ORDER BY rowid DESC
         LIMIT 1
         """).fetchone()
     
-    print(val)
+    if row != None:
+        row = row[:-1]
+
+    if row:
+        conn.execute(
+            f"""
+            DELETE FROM Info
+            WHERE start_time = {row[2]}
+            """
+        )
+   
+    return row
 
     
 
@@ -44,12 +55,10 @@ def create(conn):
 @connection
 def insert_all(conn, timeline: list[Info]):
     today = datetime.date.today()
-    
-    while(len(timeline)<1):
+    while(len(timeline)>1):
         t = timeline.pop(0)
         values = vars(t).values()
         conn.execute("INSERT INTO Info (name, cathegory, start_time, delta_time, using_date) VALUES (?, ?, ?, ?, ?)", (*values, today.strftime("%Y-%m-%d")))
-        print("fatto")
 
     
         
