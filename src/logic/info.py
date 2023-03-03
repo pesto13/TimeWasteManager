@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 import time
-
+from datetime import date
 
 @dataclass
 class Info():
-    name: str
-    cathegory: str
+    application_name: str
+    category: str
     start_time: time.time
-    delta_time: int
+    seconds_used: int
+    using_date: date

@@ -10,61 +10,8 @@ from storedata import db
 
 from logic import process
 
-""" def runV1(programs: dict[Info], l: list[str], interval: int):
-
-    browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
-    #attualmente non sta venendo usato ne il path ne il tab_title
-    app_name, app_path = process.getAppName()
-
-    # tab_title = process.getBrowserTab() if app_name in browsers else app_name
-
-    cat:str = ""
-    remember_app: str = ""
-
-    #se l'app è un browser, associo la categoria al browser
-    if app_name in browsers:
-        from collections import Counter
-        # utilizzo di Counter() per contare il numero di occorrenze di ogni elemento
-        counted_list = Counter(l)
-        # utilizzo di most_common() per trovare l'elemento più comune
-        if counted_list:
-            cat = counted_list.most_common(1)[0][0]
-            
-        remember_app = app_name
-        app_name += cat
-        
-    #poi procedo ad inserirlo
-    if programs.get(app_name) == None:
-        print("non trovato")
-
-        #devo farlo se non è un browser
-        if remember_app not in browsers:
-            cat = ai.get_application_category(app_name)
-
-        #ora, se non è un browser, genero il suo categoria
-        if remember_app not in browsers:
-            cat = storedata.random_genere()
-
-        programs[app_name] = Info(app_name, cat, interval)
-    
-    #altrimenti era già presente
-    else:
-        print("trovato")
-        i = programs.get(app_name)
-        i.seconds += interval
-        cat = i.cathegory
-        programs[app_name] = i
-
-    
-    
-
-    #endif
-    l.append(cat)
-    if len(l)>20:
-        l.pop(0) """
-
-
-def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], interval):
+def runV2(timeline: list[Info], application_to_category: dict[str], latest_categories: list[str], interval):
+    MAX_LIST = 20
     browsers = ('chrome', 'firefox', 'msedge', 'iexplore', 'opera', 'brave')
     #attualmente non sta venendo usato ne il path ne il tab_title
     app_name = process.get_app_name()
@@ -78,7 +25,7 @@ def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], inter
     if app_name in browsers:
         from collections import Counter
         # utilizzo di Counter() per contare il numero di occorrenze di ogni elemento
-        counted_list = Counter(latest_cat)
+        counted_list = Counter(latest_categories)
         # utilizzo di most_common() per trovare l'elemento più comune
         if counted_list:
             cat = counted_list.most_common(1)[0][0]
@@ -87,7 +34,7 @@ def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], inter
         app_name += cat
         
     #poi procedo ad inserirlo
-    if cat_app.get(app_name) == None:
+    if application_to_category.get(app_name) == None:
 
         #devo farlo se non è un browser
         """ if remember_app not in browsers:
@@ -97,33 +44,31 @@ def runV2(timeline: list[Info], cat_app: dict[str], latest_cat: list[str], inter
         if remember_app not in browsers:
             cat = file_json.random_genere()
 
-        cat_app[app_name] = cat
+        application_to_category[app_name] = cat
         # programs[app_name] = Info(app_name, cat, interval)
     
     #altrimenti era già presente
     else:
-        cat = cat_app.get(app_name)
+        cat = application_to_category.get(app_name)
     
 
-    if len(timeline)==0 or timeline[-1].name != app_name:
+    if len(timeline)==0 or timeline[-1].application_name != app_name:
 
         timeline.append(Info(
-                name=app_name,
-                cathegory=cat,
+                application_name=app_name,
+                category=cat,
                 start_time=int(time()),
-                delta_time=interval
+                seconds_used=interval,
+                using_date=date.today().strftime("%d/%m/%Y")
                 ))
         
     else:
-        timeline[-1].delta_time+=interval
-
-    
-    
+        timeline[-1].seconds_used+=interval
 
     #endif
-    latest_cat.append(cat)
-    if len(latest_cat)>20:
-        latest_cat.pop(0)
+    latest_categories.append(cat)
+    if len(latest_categories)>MAX_LIST:
+        latest_categories.pop(0)
     
 
 def main():
@@ -137,8 +82,8 @@ def main():
     -una lista delle ultime interval * numero di app usate
     """
     timeline: list[Info] = list()
-    cat_app: dict[str] = dict()
-    latest_cat: list[str] = list()
+    application_to_category: dict[str] = dict()
+    latest_categories: list[str] = list()
     count = 0
     # db.drop()
     db.create()
@@ -151,9 +96,10 @@ def main():
         count+=1
 
         # runV1(programs, l, interval)
-        runV2(timeline, cat_app, latest_cat, interval)
+        runV2(timeline, application_to_category, latest_categories, interval)
 
         #scrivo su file
+        #ora scrive su db
         if count>=3:
             count=0
             # print("stampo")
@@ -169,18 +115,9 @@ def main():
                 today = date.today()
                 # per v1
                 # programs = dict()
-                timeline = list()
-            
-            
-            
+                timeline = list()            
         sleep(interval)
 
-def prova():
-    
-    
-    while True:
-        process.get_app_name()
-        sleep(1)
 
 if __name__ == '__main__':
     

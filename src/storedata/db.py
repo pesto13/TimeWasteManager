@@ -25,8 +25,8 @@ def load_last(conn: sqlite3.Connection):
         LIMIT 1
         """).fetchone()
     
-    if row != None:
-        row = row[:-1]
+    """ if row != None:
+        row = row[:-1] """
 
     if row:
         conn.execute(
@@ -42,23 +42,31 @@ def load_last(conn: sqlite3.Connection):
 
 @connection
 def create(conn):
-    # Crea la tabella
     conn.execute('''CREATE TABLE IF NOT EXISTS Info
-                (name TEXT NOT NULL,
-                cathegory TEXT NOT NULL,
+                (application_name TEXT NOT NULL,
+                category TEXT NOT NULL,
                 start_time TIME NOT NULL,
-                delta_time INT,
+                seconds_used INT,
                 using_date DATE 
                 );''')
     
 
 @connection
 def insert_all(conn, timeline: list[Info]):
-    today = datetime.date.today()
+
+    conn.cursor()
+    
     while(len(timeline)>1):
         t = timeline.pop(0)
-        values = vars(t).values()
-        conn.execute("INSERT INTO Info (name, cathegory, start_time, delta_time, using_date) VALUES (?, ?, ?, ?, ?)", (*values, today.strftime("%Y-%m-%d")))
+        values = list(vars(t).values())
+        # print(values)
+
+        conn.execute("""INSERT INTO Info (application_name, category, start_time, seconds_used, using_date)
+                        VALUES (?, ?, ?, ?, ?)""" , values)
+
+
+
+
 
     
         
