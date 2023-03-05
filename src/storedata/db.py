@@ -15,14 +15,14 @@ def drop(conn: sqlite3.Connection):
     conn.execute("DROP TABLE Info")
 
 @connection
-def load_last(conn: sqlite3.Connection):
+def pop_last(conn: sqlite3.Connection, index=1):
     
     
     row : tuple = conn.execute(
         f"""
         SELECT * FROM Info
         ORDER BY rowid DESC
-        LIMIT 1
+        LIMIT {index}
         """).fetchone()
     
     """ if row != None:
@@ -38,7 +38,19 @@ def load_last(conn: sqlite3.Connection):
    
     return row
 
+@connection
+def get_last(conn: sqlite3.Connection, index=1):
     
+    
+    row : tuple = conn.execute(
+        f"""
+        SELECT * FROM Info
+        ORDER BY rowid DESC
+        LIMIT {index}
+        """).fetchone()
+   
+    return row
+
 
 @connection
 def create(conn):
@@ -56,13 +68,12 @@ def insert_all(conn, timeline: list[Info]):
 
     conn.cursor()
     
-    while(len(timeline)>1):
-        t = timeline.pop(0)
-        values = list(vars(t).values())
-        # print(values)
+    values = [tuple(vars(t).values()) for t in timeline]
 
-        conn.execute("""INSERT INTO Info (application_name, category, start_time, seconds_used, using_date)
-                        VALUES (?, ?, ?, ?, ?)""" , values)
+    sql = """INSERT INTO Info (application_name, category, start_time, seconds_used, using_date)
+             VALUES (?, ?, ?, ?, ?)"""
+    
+    conn.executemany(sql , values)
 
 
 
