@@ -38,3 +38,6 @@ voglio fare tutto in append per efficienza (memoria e accesso al file)
 devo comunque importare la lista di app (solo ultima)
 raggiunta la soglia scrivo e svuoto la lista, tranne l'ultimo?
 
+
+sudo apt-get install pkg-config
+

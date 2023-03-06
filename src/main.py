@@ -7,7 +7,6 @@ from logic.info import Info
 from storedata import file_json
 from storedata import db
 
-
 from logic import process
 
 def runV2(timeline: list[Info], application_to_category: dict[str], latest_categories: list[str], interval):
@@ -71,7 +70,7 @@ def runV2(timeline: list[Info], application_to_category: dict[str], latest_categ
     if len(latest_categories)>MAX_LIST:
         latest_categories.pop(0)
 
-def is_enought_time(seconds: int, interval: int) -> bool:
+def _is_enought_time(seconds: int, interval: int) -> bool:
     """
     return true every interval*MAX seconds
     default interval is 1 (every 10 seconds)
@@ -79,9 +78,19 @@ def is_enought_time(seconds: int, interval: int) -> bool:
     MAX = 5
     return True if seconds%(interval*MAX)==0 else False
 
-def is_enought_elements(elements_count: int) -> bool:
+def _is_enought_elements(elements_count: int) -> bool:
     MAX_ELEMENTS = 5
     return True if elements_count>MAX_ELEMENTS else False
+
+def _is_to_pop(last_app_start_time: int):
+
+    last_row = db.get_last()
+    if last_row == None:
+        return False
+    
+    print(f"db dice: {Info(*last_row).start_time}")
+    print(f"last app dice: {last_app_start_time}")
+    return True if Info(*last_row).start_time == last_app_start_time else False 
 
 def startup(timeline: list[Info], application_to_category: dict[str], latest_categories: list[str]):
     row: tuple
@@ -114,13 +123,13 @@ def main():
         
         runV2(timeline, application_to_category, latest_categories, interval)
 
-        if is_enought_time(timeline[-1].seconds_used, interval) or is_enought_elements(len(timeline)):
+        if _is_enought_time(timeline[-1].seconds_used, interval) or _is_enought_elements(len(timeline)):
 
             for t in timeline:
                 print(t)
             
-            #se è da tanto che sto usando la stessa app scrivo lo stesso ma elimino la riga
-            if(timeline[0].start_time==Info(*db.get_last()).start_time):
+            #se è da tanto che sto usando la stessa app scrivo lo stesso ma elimino la riga precedente
+            if(_is_to_pop(timeline[0].start_time)):
                 db.pop_last()
             db.insert_all(timeline)
 
@@ -135,8 +144,9 @@ def main():
 
 
 def prova():
-    records = db.load_from_date_to_date(start_date=date.today().timestamp(), end_date=date.today()+timedelta(days=1))
-    
+    today = date.today()
+    # today = today.strftime("%d/%m/%Y")
+    records = db.load_weak()
     for r in records:
         print(r)
 

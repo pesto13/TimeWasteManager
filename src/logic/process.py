@@ -37,13 +37,20 @@ def get_app_name():
     elif(get_os() == "Linux"):
         #TODO sistema il return
         # Esegui il comando xprop per ottenere l'ID della finestra in foreground
-        output = subprocess.check_output(['xprop', '-root', '_NET_ACTIVE_WINDOW'])
-        wid = output.split()[-1]
+        nome_processo = ""
+        try:
+            output = subprocess.check_output(['xprop', '-root', '_NET_ACTIVE_WINDOW'])
+            wid = output.split()[-1]
 
-        # Esegui il comando xprop per ottenere il nome del processo corrispondente
-        output = subprocess.check_output(['xprop', '-id', wid, 'WM_CLASS'])
-        nome_processo = output.split(b'=')[-1].strip().decode()
+            # Verifica che l'ID finestra sia valido prima di passarlo al comando xprop
+            if wid != b'0x0':
+                output = subprocess.check_output(['xprop', '-id', wid, 'WM_CLASS'])
+                nome_processo = output.split(b'=')[-1].strip().decode()
+                print(f"Il nome del processo in foreground è: {nome_processo}")
+            else:
+                print(f"Nessuna finestra attiva")
 
-        print(f"Il nome del processo in foreground è: {nome_processo}")
+        except subprocess.CalledProcessError as e:
+            print(f"Errore durante l'esecuzione del comando: {e}")
 
         return nome_processo

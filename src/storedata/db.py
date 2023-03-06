@@ -1,6 +1,6 @@
 import sqlite3
 from logic.info import Info
-from datetime import datetime
+import datetime
 
 def connection(f):
     def inner(*args, **kwargs):
@@ -24,9 +24,6 @@ def pop_last(conn: sqlite3.Connection, index=1):
         ORDER BY rowid DESC
         LIMIT {index}
         """).fetchone()
-    
-    """ if row != None:
-        row = row[:-1] """
 
     if row:
         conn.execute(
@@ -40,7 +37,6 @@ def pop_last(conn: sqlite3.Connection, index=1):
 
 @connection
 def get_last(conn: sqlite3.Connection, index=1):
-    
     
     row : tuple = conn.execute(
         f"""
@@ -71,14 +67,26 @@ def insert_all(conn, timeline: list[Info]):
     conn.executemany(sql , values)
 
 
+
+def load_weak(roll_back: int = 0):
+    today = datetime.datetime.today().replace(hour=0, minute=0, second=0) \
+            - datetime.timedelta(weeks=roll_back)
+    # numero_settimana = today.isocalendar()[1]
+
+    # Calcola il lunedì della settimana corrente
+    start_monday = today - datetime.timedelta(days=today.weekday())
+    # Calcola la domenica della settimana corrente
+    end_sunday = start_monday + datetime.timedelta(days=7)
+
+    start_monday = int(start_monday.timestamp())
+    end_sunday = int(end_sunday.timestamp())
+    
+    return load_from_date_to_date(start_monday, end_sunday)
+
+
 @connection
-def load_from_date_to_date(conn, start_date, end_date):
-    start_date = datetime.strptime(start_date, "%Y-%m-%d")
-    start_date = int(start_date.timestamp())
-
-    end_date = datetime.strptime(end_date, "%Y-%m-%d")
-    end_date = int(end_date.timestamp())
-
+def load_from_date_to_date(conn, start_date: int, end_date: int):
+ 
     print(start_date)
     print(end_date)
     query = f"SELECT * FROM info WHERE start_time BETWEEN '{start_date}' AND '{end_date}'"
