@@ -1,5 +1,5 @@
 from time import sleep, time
-from datetime import date
+from datetime import date, timedelta
 
 from logic import process
 from logic.info import Info
@@ -83,6 +83,16 @@ def is_enought_elements(elements_count: int) -> bool:
     MAX_ELEMENTS = 5
     return True if elements_count>MAX_ELEMENTS else False
 
+def startup(timeline: list[Info], application_to_category: dict[str], latest_categories: list[str]):
+    row: tuple
+    if ((row := db.pop_last()) == None):
+        return
+    
+    i = Info(*row)
+    timeline.append(i)
+    application_to_category[i.application_name] = i.category
+    latest_categories.append(i.category)
+
 def main():
     interval = 1
     today = date.today()
@@ -98,21 +108,18 @@ def main():
     # db.drop()
     db.create()
 
-    if ((row := db.pop_last()) != None):
-        timeline.append(Info( *row ))
+    startup(timeline, application_to_category, latest_categories)
     
     while True:
         
         runV2(timeline, application_to_category, latest_categories, interval)
 
-
         if is_enought_time(timeline[-1].seconds_used, interval) or is_enought_elements(len(timeline)):
 
             for t in timeline:
                 print(t)
-
             
-            # non va bene
+            #se è da tanto che sto usando la stessa app scrivo lo stesso ma elimino la riga
             if(timeline[0].start_time==Info(*db.get_last()).start_time):
                 db.pop_last()
             db.insert_all(timeline)
@@ -127,8 +134,12 @@ def main():
         sleep(interval)
 
 
+def prova():
+    records = db.load_from_date_to_date(start_date=date.today().timestamp(), end_date=date.today()+timedelta(days=1))
+    
+    for r in records:
+        print(r)
+
 if __name__ == '__main__':
-    
-    
-    main()
-    # prova()
+    # main()
+    prova()

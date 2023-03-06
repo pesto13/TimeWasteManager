@@ -10,4 +10,4 @@ __pycache__/
 daily_track/
 *.json
 *.db
-*.sqlite
+*.sql
